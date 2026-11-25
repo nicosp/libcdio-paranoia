@@ -89,7 +89,7 @@ typedef enum  {
   PARANOIA_CB_FINISHED        /**< Finished writing "*" */
 } paranoia_cb_mode_t;
 
-  PARANOIA_PUBLIC extern const char *paranoia_cb_mode2str[];
+PARANOIA_PUBLIC extern const char *paranoia_cb_mode2str[];
 
 #ifdef __cplusplus
 extern "C" {
@@ -100,103 +100,105 @@ extern "C" {
 
     @return paranoia version string
    */
-  PARANOIA_PUBLIC extern const char *cdio_paranoia_version(void);
+PARANOIA_PUBLIC extern const char *cdio_paranoia_version(void);
 
-  /*!
-    Get and initialize a new cdrom_paranoia object from cdrom_drive.
-    Run this before calling any of the other paranoia routines below.
+/*!
+  Get and initialize a new cdrom_paranoia object from cdrom_drive.
+  Run this before calling any of the other paranoia routines below.
 
-    @return new cdrom_paranoia object Call paranoia_free() when you are
-    done with it
-   */
-  PARANOIA_PUBLIC extern cdrom_paranoia_t *cdio_paranoia_init(cdrom_drive_t *d);
+  @return new cdrom_paranoia object Call paranoia_free() when you are
+  done with it
+ */
+PARANOIA_PUBLIC extern cdrom_paranoia_t *cdio_paranoia_init(cdrom_drive_t *d);
 
-  /*!
-    Free any resources associated with p.
+/*!
+  Free any resources associated with p.
 
-    @param p       paranoia object to for which resources are to be freed.
+  @param p       paranoia object to for which resources are to be freed.
 
-    @see paranoia_init.
-   */
-  PARANOIA_PUBLIC extern void cdio_paranoia_free(cdrom_paranoia_t *p);
+  @see paranoia_init.
+ */
+PARANOIA_PUBLIC extern void cdio_paranoia_free(cdrom_paranoia_t *p);
 
-  /*!
-    Set the kind of repair you want to on for reading.
-    The modes are listed above
+/*!
+  Set the kind of repair you want to on for reading.
+  The modes are listed above
 
-    @param p             paranoia type
-    @param mode_flags    paranoia mode flags built from values in
-                         paranoia_mode_t, e.g.
-		         PARANOIA_MODE_FULL^PARANOIA_MODE_NEVERSKIP
-   */
-  PARANOIA_PUBLIC extern void cdio_paranoia_modeset(cdrom_paranoia_t *p, int mode_flags);
+  @param p             paranoia type
+  @param mode_flags    paranoia mode flags built from values in
+                       paranoia_mode_t, e.g.
+                       PARANOIA_MODE_FULL^PARANOIA_MODE_NEVERSKIP
+ */
+PARANOIA_PUBLIC extern void cdio_paranoia_modeset(cdrom_paranoia_t *p,
+                                                  int mode_flags);
 
-  /*!
-    reposition reading offset.
+/*!
+  reposition reading offset.
 
-    @param p       paranoia type
-    @param seek    byte offset to seek to
-    @param whence  like corresponding parameter in libc's lseek, e.g.
-                   SEEK_SET or SEEK_END.
-  */
-  PARANOIA_PUBLIC extern lsn_t cdio_paranoia_seek(cdrom_paranoia_t *p, int32_t seek,
-				  int whence);
+  @param p       paranoia type
+  @param seek    byte offset to seek to
+  @param whence  like corresponding parameter in libc's lseek, e.g.
+                 SEEK_SET or SEEK_END.
+*/
+PARANOIA_PUBLIC extern lsn_t cdio_paranoia_seek(cdrom_paranoia_t *p,
+                                                int32_t seek, int whence);
 
-  /*!
-    Reads the next sector of audio data and returns a pointer to a full
-    sector of verified samples.
+/*!
+  Reads the next sector of audio data and returns a pointer to a full
+  sector of verified samples.
 
-    @param p paranoia object.
+  @param p paranoia object.
 
-    @param callback callback routine which gets called with the status
-    on each read.
+  @param callback callback routine which gets called with the status
+  on each read.
 
-    @return the audio data read, CDIO_CD_FRAMESIZE_RAW (2352)
-    bytes. This data is not to be freed by the caller. It will persist
-    only until the next call to paranoia_read() for this p.
-  */
-  PARANOIA_PUBLIC extern int16_t *cdio_paranoia_read(cdrom_paranoia_t *p,
-				     void(*callback)(long int,
-						     paranoia_cb_mode_t));
+  @return the audio data read, CDIO_CD_FRAMESIZE_RAW (2352)
+  bytes. This data is not to be freed by the caller. It will persist
+  only until the next call to paranoia_read() for this p.
+*/
+PARANOIA_PUBLIC extern int16_t *
+cdio_paranoia_read(cdrom_paranoia_t *p,
+                   void (*callback)(long int, paranoia_cb_mode_t));
 
-  /*! The same as cdio_paranoia_read but the number of retries is set.
-    @param p paranoia object.
+/*! The same as cdio_paranoia_read but the number of retries is set.
+  @param p paranoia object.
 
-    @param callback callback routine which gets called with the status
-    on each read.
+  @param callback callback routine which gets called with the status
+  on each read.
 
-    @param max_retries number of times to try re-reading a block before
-    failing.
+  @param max_retries number of times to try re-reading a block before
+  failing.
 
-    @return the block of CDIO_FRAMEIZE_RAW bytes (or
-    CDIO_FRAMESIZE_RAW / 2 16-bit integers). Unless byte-swapping has
-    been turned off the 16-bit integers Endian independent order.
+  @return the block of CDIO_FRAMEIZE_RAW bytes (or
+  CDIO_FRAMESIZE_RAW / 2 16-bit integers). Unless byte-swapping has
+  been turned off the 16-bit integers Endian independent order.
 
-    @see cdio_paranoia_read.
+  @see cdio_paranoia_read.
 
-  */
-  PARANOIA_PUBLIC extern int16_t *cdio_paranoia_read_limited(cdrom_paranoia_t *p,
-					     void(*callback)(long int,
-							   paranoia_cb_mode_t),
-					     int max_retries);
-
+*/
+PARANOIA_PUBLIC extern int16_t *
+cdio_paranoia_read_limited(cdrom_paranoia_t *p,
+                           void (*callback)(long int, paranoia_cb_mode_t),
+                           int max_retries);
 
 /*! a temporary hack */
-  PARANOIA_PUBLIC extern void cdio_paranoia_overlapset(cdrom_paranoia_t *p,long overlap);
+PARANOIA_PUBLIC extern void cdio_paranoia_overlapset(cdrom_paranoia_t *p,
+                                                     long overlap);
 
-  PARANOIA_PUBLIC extern void cdio_paranoia_set_range(cdrom_paranoia_t *p, long int start,
-				      long int end);
+PARANOIA_PUBLIC extern void
+cdio_paranoia_set_range(cdrom_paranoia_t *p, long int start, long int end);
 
-  /*!
-    Set or query the number of sectors used for paranoia cache modelling.
+/*!
+  Set or query the number of sectors used for paranoia cache modelling.
 
-    @param p       paranoia object
-    @param sectors number of sectors to use, default is 1200 (pass -1 to
-		   query current model size without setting a new value)
+  @param p       paranoia object
+  @param sectors number of sectors to use, default is 1200 (pass -1 to
+                 query current model size without setting a new value)
 
-    @return        number of cache sectors before the call
-   */
-  PARANOIA_PUBLIC extern int cdio_paranoia_cachemodel_size(cdrom_paranoia_t *p,int sectors);
+  @return        number of cache sectors before the call
+ */
+PARANOIA_PUBLIC extern int cdio_paranoia_cachemodel_size(cdrom_paranoia_t *p,
+                                                         int sectors);
 
 #ifndef DO_NOT_WANT_PARANOIA_COMPATIBILITY
 /** For compatibility with good ol' paranoia */
