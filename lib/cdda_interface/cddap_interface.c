@@ -159,7 +159,7 @@ jitter_read (cdrom_drive_t *d, void *p, lsn_t begin, long i_sectors,
 
   /* Zeroed, so that bytes a read does not fill (past the end of an image,
      say) are silence rather than whatever was in memory. */
-  char *p_buf=calloc(i_sectors+1, CDIO_CD_FRAMESIZE_RAW);
+  char *p_buf = calloc(i_sectors + 1, CDIO_CD_FRAMESIZE_RAW);
 
   if (d->i_test_flags & CDDA_TEST_ALWAYS_JITTER)
     jitter_flag = 1;

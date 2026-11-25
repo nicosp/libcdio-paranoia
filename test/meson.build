@@ -17,6 +17,11 @@ endforeach
 
 subdir('cdda_interface')
 
+# endian.sh copies data/cdda.cue into the build directory, and the cue
+# sheet names its data file BOING.BIN relative to itself, as in the
+# source tree's test directory.
+configure_file(input: 'BOING.BIN', output: 'BOING.BIN', copy: true)
+
 # Regression scripts.  They find cd-paranoia through abs_top_builddir.
 sh = find_program('sh', required: false)
 script_env = environment({

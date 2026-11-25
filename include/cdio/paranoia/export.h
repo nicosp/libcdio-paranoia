@@ -40,44 +40,44 @@
 #define CDIO_PARANOIA_EXPORT_H_
 
 #if defined(_WIN32) || defined(__CYGWIN__)
-#  define CDIO_PARANOIA_EXPORT_ __declspec(dllexport)
-#  if defined(_MSC_VER)
-#    define CDIO_PARANOIA_IMPORT_ __declspec(dllimport)
-#  else
-     /* The MinGW and Cygwin linkers import from a DLL by themselves. */
-#    define CDIO_PARANOIA_IMPORT_
-#  endif
-#elif defined(__GNUC__) && __GNUC__ >= 4
-#  define CDIO_PARANOIA_EXPORT_ __attribute__((visibility("default")))
-#  define CDIO_PARANOIA_IMPORT_ __attribute__((visibility("default")))
+#define CDIO_PARANOIA_EXPORT_ __declspec(dllexport)
+#if defined(_MSC_VER)
+#define CDIO_PARANOIA_IMPORT_ __declspec(dllimport)
 #else
-#  define CDIO_PARANOIA_EXPORT_
-#  define CDIO_PARANOIA_IMPORT_
+/* The MinGW and Cygwin linkers import from a DLL by themselves. */
+#define CDIO_PARANOIA_IMPORT_
+#endif
+#elif defined(__GNUC__) && __GNUC__ >= 4
+#define CDIO_PARANOIA_EXPORT_ __attribute__((visibility("default")))
+#define CDIO_PARANOIA_IMPORT_ __attribute__((visibility("default")))
+#else
+#define CDIO_PARANOIA_EXPORT_
+#define CDIO_PARANOIA_IMPORT_
 #endif
 
 /* On Windows libtool compiles a library's sources twice, defining
    DLL_EXPORT only for the DLL.  The static library's objects must not
    export anything, or every program linked with them would re-export
    them. */
-#if defined(CDIO_PARANOIA_LIBTOOL) && (defined(_WIN32) || defined(__CYGWIN__)) \
-    && !defined(DLL_EXPORT)
-#  define CDIO_PARANOIA_STATIC_ 1
+#if defined(CDIO_PARANOIA_LIBTOOL) &&                                          \
+    (defined(_WIN32) || defined(__CYGWIN__)) && !defined(DLL_EXPORT)
+#define CDIO_PARANOIA_STATIC_ 1
 #endif
 
 #if defined(CDIO_STATIC) || defined(CDIO_PARANOIA_STATIC_)
-#  define CDDA_PUBLIC
-#  define PARANOIA_PUBLIC
+#define CDDA_PUBLIC
+#define PARANOIA_PUBLIC
 #else
-#  if defined(CDIO_BUILDING_LIBCDIO_CDDA)
-#    define CDDA_PUBLIC CDIO_PARANOIA_EXPORT_
-#  else
-#    define CDDA_PUBLIC CDIO_PARANOIA_IMPORT_
-#  endif
-#  if defined(CDIO_BUILDING_LIBCDIO_PARANOIA)
-#    define PARANOIA_PUBLIC CDIO_PARANOIA_EXPORT_
-#  else
-#    define PARANOIA_PUBLIC CDIO_PARANOIA_IMPORT_
-#  endif
+#if defined(CDIO_BUILDING_LIBCDIO_CDDA)
+#define CDDA_PUBLIC CDIO_PARANOIA_EXPORT_
+#else
+#define CDDA_PUBLIC CDIO_PARANOIA_IMPORT_
+#endif
+#if defined(CDIO_BUILDING_LIBCDIO_PARANOIA)
+#define PARANOIA_PUBLIC CDIO_PARANOIA_EXPORT_
+#else
+#define PARANOIA_PUBLIC CDIO_PARANOIA_IMPORT_
+#endif
 #endif
 
 #endif /* CDIO_PARANOIA_EXPORT_H_ */

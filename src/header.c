@@ -9,11 +9,12 @@
  */
 
 #include "header.h"
+#include <cdio/types.h> /* GNUC_UNUSED */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #ifdef _MSC_VER
-#include <io.h>  /* write, close; MSVC has no <unistd.h> */
+#include <io.h> /* write, close; MSVC has no <unistd.h> */
 #else
 #include <unistd.h>
 #endif
@@ -41,7 +42,7 @@ static void PutNum(long num, int f, int endianness, int bytes) {
 
 /** Writes WAV headers */
 void WriteWav(int f, long int bytes) {
-  int dummy __attribute__((unused));
+  int dummy GNUC_UNUSED;
 
   /* quick and dirty */
 
@@ -63,7 +64,7 @@ void WriteWav(int f, long int bytes) {
 void WriteAiff(int f, long int bytes) {
   long size = bytes + 54;
   long frames = bytes / 4;
-  int dummy __attribute__((unused));
+  int dummy GNUC_UNUSED;
 
   /* Again, quick and dirty */
 
@@ -88,7 +89,7 @@ void WriteAiff(int f, long int bytes) {
 void WriteAifc(int f, long bytes) {
   long size = bytes + 86;
   long frames = bytes / 4;
-  int dummy __attribute__((unused));
+  int dummy GNUC_UNUSED;
 
   /* Again, quick and dirty */
 

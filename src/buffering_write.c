@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <string.h>
 #ifdef _MSC_VER
-#include <io.h>  /* write, close; MSVC has no <unistd.h> */
+#include <io.h> /* write, close; MSVC has no <unistd.h> */
 #else
 #include <unistd.h>
 #endif

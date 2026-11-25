@@ -26,13 +26,13 @@
 # include <sys/time.h>
 #endif
 #ifdef HAVE_UNISTD_H
-# include <unistd.h>
+#include <unistd.h>
 #endif
 #ifdef _MSC_VER
-# include <io.h>  /* write; MSVC has no <unistd.h> */
+#include <io.h> /* write; MSVC has no <unistd.h> */
 #endif
 #ifndef STDERR_FILENO
-# define STDERR_FILENO 2
+#define STDERR_FILENO 2
 #endif
 
 #include "common_interface.h"
