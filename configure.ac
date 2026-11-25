@@ -267,6 +267,24 @@ dnl system
 # When we find it, put it in below instead of "cos".
 AC_CHECK_LIB(m, cos, [LIBS="$LIBS -lm"; COS_LIB="-lm"])
 CFLAGS="$CFLAGS $WARN_CFLAGS"
+
+dnl The libraries export only what <cdio/paranoia/export.h> marks.  On
+dnl Windows that is done with __declspec(dllexport); elsewhere compile
+dnl them with -fvisibility=hidden so nothing unmarked is exported.
+VISIBILITY_CFLAGS=''
+case $host_os in
+  mingw*|cygwin*) ;;
+  *)
+    SAVE_CFLAGS="$CFLAGS"
+    CFLAGS="$CFLAGS -fvisibility=hidden -Werror"
+    AC_MSG_CHECKING([whether $CC understands -fvisibility=hidden])
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[]])],
+      [VISIBILITY_CFLAGS='-fvisibility=hidden'; AC_MSG_RESULT(yes)],
+      [AC_MSG_RESULT(no)])
+    CFLAGS="$SAVE_CFLAGS"
+    ;;
+esac
+AC_SUBST(VISIBILITY_CFLAGS)
 AC_SUBST(COS_LIB)
 
 # Linux has clock_gettime in librt

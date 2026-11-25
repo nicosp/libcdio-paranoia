@@ -13,6 +13,22 @@ EXTRA_DIST = \
         INSTALL.md \
         README.md \
 	make-check-filter.rb \
+	doc/en/meson.build \
+	doc/ja/meson.build \
+	doc/meson.build \
+	example/C++/meson.build \
+	example/meson.build \
+	include/cdio/paranoia/meson.build \
+	lib/cdda_interface/meson.build \
+	lib/meson.build \
+	lib/paranoia/meson.build \
+	lib/version-script.in \
+	meson.build \
+	meson.options \
+	src/meson.build \
+	subprojects/libcdio.wrap \
+	test/cdda_interface/meson.build \
+	test/meson.build \
 	example/README \
 	COPYING \
 	$(wildcard test/data/*.bin) \

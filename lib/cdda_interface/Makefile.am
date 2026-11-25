@@ -29,8 +29,6 @@
 #     public release, then set AGE to 0. A changed interface means an
 #     incompatibility with previous versions.
 
-EXTRA_DIST = libcdio_cdda.sym
-
 libcdio_cdda_la_CURRENT = 2
 libcdio_cdda_la_REVISION = 0
 libcdio_cdda_la_AGE = 0
@@ -46,7 +44,9 @@ lib_LTLIBRARIES = libcdio_cdda.la
 libcdio_cdda_la_SOURCES = $(libcdio_cdda_sources)
 libcdio_cdda_la_ldflags = -version-info $(libcdio_cdda_la_CURRENT):$(libcdio_cdda_la_REVISION):$(libcdio_cdda_la_AGE) @LT_NO_UNDEFINED@
 
-AM_CPPFLAGS = $(LIBCDIO_PARANOIA_CFLAGS) $(LIBCDIO_CFLAGS)
+AM_CPPFLAGS = $(LIBCDIO_PARANOIA_CFLAGS) $(LIBCDIO_CFLAGS) \
+	-DCDIO_BUILDING_LIBCDIO_CDDA -DCDIO_PARANOIA_LIBTOOL
+AM_CFLAGS = $(VISIBILITY_CFLAGS)
 
 FLAGS=@LIBCDIO_CFLAGS@ @UCDROM_H@ @TYPESIZES@ @CFLAGS@
 
@@ -59,7 +59,6 @@ DEBUG=$(FLAGS) -DCDDA_TEST
 ##	$(LD) $(DEBUG) test_interface.o $(LDFLAGS) -o cdda_test $(LIBS) libcdio_cdda.a
 
 LIBS = $(LIBCDIO_LIBS) @LIBS@ @COS_LIB@
-
 
 ########################################################
 # Things to version the symbols in the libraries
@@ -103,13 +102,11 @@ LIBS = $(LIBCDIO_LIBS) @LIBS@ @COS_LIB@
 # (and libvcdinfo) know which versioned function to use and then use the
 # good one.
 
-
 # This is some simple versioning where every symbol is versioned with
 # something that looks like the SONAME of the library. More complex (and
 # better) versioning is possible; it is for example what is used by glibc.
 # But good complex versioning is something that requires much more
 # work...
-
 
 # The below is a impliments symbol versioning.  First of all, I
 # compute MAJOR as CURENT - AGE; that is what is used within libtool
@@ -129,14 +126,12 @@ libcdio_cdda_la_LDFLAGS = $(libcdio_cdda_la_ldflags)
 endif # HAVE_LD_VERSION_SCRIPT
 libcdio_cdda_la_DEPENDENCIES = libcdio_cdda.la.ver
 
-libcdio_cdda.la.ver: $(libcdio_cdda_la_OBJECTS) $(srcdir)/libcdio_cdda.sym
-	echo 'CDIO_CDDA_$(libcdio_cdda_la_MAJOR) { ' > $@
-	objs=`for obj in $(libcdio_cdda_la_OBJECTS); do sed -ne "s/^pic_object='\(.*\)'$$/\1/p" $$obj; done`; \
-	if test -n "$$objs" ; then \
-	  ${NM} $${objs} | sed -n -e 's/^.*[ 	][ABCDGIRSTW][ABCDGIRSTW]*[ 	][ 	]*\([_A-Za-z][_A-Za-z0-9]*\)$$/\1/p' | sort -u | { first=true; while read symbol; do if grep -q "^$${symbol}\$$" $(srcdir)/libcdio_cdda.sym; then if test $$first = true; then echo "  global:"; first=false; fi; echo "    $${symbol};"; fi; done; } >> $@; \
-	  ${NM} $${objs} | sed -n -e 's/^.*[ 	][ABCDGIRSTW][ABCDGIRSTW]*[ 	][ 	]*\([_A-Za-z][_A-Za-z0-9]*\)$$/\1/p' | sort -u | { first=true; while read symbol; do if grep -q "^$${symbol}\$$" $(srcdir)/libcdio_cdda.sym; then :; else if test $$first = true; then echo "  local:"; first=false; fi; echo "    $${symbol};"; fi; done; } >> $@; \
-	fi
-	echo '};' >> $@
+# Which symbols are exported is decided by the CDDA_PUBLIC /
+# PARANOIA_PUBLIC marks in the headers (see <cdio/paranoia/export.h>),
+# with the library compiled -fvisibility=hidden; the version script only
+# tags them all CDIO_CDDA_MAJOR.
+libcdio_cdda.la.ver: Makefile
+	echo 'CDIO_CDDA_$(libcdio_cdda_la_MAJOR) { global: *; };' > $@
 else !BUILD_VERSIONED_LIBS
 libcdio_cdda_la_LDFLAGS = $(libcdio_cdda_la_ldflags)
 endif !BUILD_VERSIONED_LIBS

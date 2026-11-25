@@ -40,8 +40,6 @@
 #     public release, then set AGE to 0. A changed interface means an
 #     incompatibility with previous versions.
 
-EXTRA_DIST = libcdio_paranoia.sym
-
 libcdio_paranoia_la_CURRENT = 2
 libcdio_paranoia_la_REVISION = 0
 libcdio_paranoia_la_AGE = 0
@@ -56,7 +54,9 @@ lib_LTLIBRARIES = libcdio_paranoia.la
 libcdio_paranoia_la_SOURCES = $(libcdio_paranoia_sources)
 libcdio_paranoia_la_ldflags = -version-info $(libcdio_paranoia_la_CURRENT):$(libcdio_paranoia_la_REVISION):$(libcdio_paranoia_la_AGE) @LT_NO_UNDEFINED@
 
-AM_CPPFLAGS = $(LIBCDIO_PARANOIA_CFLAGS) $(LIBCDIO_CFLAGS)
+AM_CPPFLAGS = $(LIBCDIO_PARANOIA_CFLAGS) $(LIBCDIO_CFLAGS) \
+	-DCDIO_BUILDING_LIBCDIO_PARANOIA -DCDIO_PARANOIA_LIBTOOL
+AM_CFLAGS = $(VISIBILITY_CFLAGS)
 
 FLAGS=@LIBCDIO_PARANOIA_CFLAGS@ @TYPESIZES@ @CFLAGS@ -I.. -I../..
 OPT=$(FLAGS)
@@ -72,7 +72,6 @@ DEBUG=$(FLAGS)
 ##	$(MAKE) libcdio_paranoia.a CFLAGS="$(DEBUG)"
 
 LIBS = $(LIBCDIO_LIBS) $(LIBCDIO_CDDA_LIBS)
-
 
 ########################################################
 # Things to version the symbols in the libraries
@@ -116,13 +115,11 @@ LIBS = $(LIBCDIO_LIBS) $(LIBCDIO_CDDA_LIBS)
 # (and libvcdinfo) know which versioned function to use and then use the
 # good one.
 
-
 # This is some simple versioning where every symbol is versioned with
 # something that looks like the SONAME of the library. More complex (and
 # better) versioning is possible; it is for example what is used by glibc.
 # But good complex versioning is something that requires much more
 # work...
-
 
 # The below is a impliments symbol versioning.  First of all, I
 # compute MAJOR as CURENT - AGE; that is what is used within libtool
@@ -142,14 +139,12 @@ libcdio_paranoia_la_LDFLAGS = $(libcdio_paranoia_la_ldflags)
 endif # HAVE_LD_VERSION_SCRIPT
 libcdio_paranoia_la_DEPENDENCIES = libcdio_paranoia.la.ver
 
-libcdio_paranoia.la.ver: $(libcdio_paranoia_la_OBJECTS) $(srcdir)/libcdio_paranoia.sym
-	echo 'CDIO_PARANOIA_$(libcdio_paranoia_la_MAJOR) { ' > $@
-	objs=`for obj in $(libcdio_paranoia_la_OBJECTS); do sed -ne "s/^pic_object='\(.*\)'$$/\1/p" $$obj; done`; \
-	if test -n "$$objs" ; then \
-	  ${NM} $${objs} | sed -n -e 's/^.*[ 	][ABCDGIRSTW][ABCDGIRSTW]*[ 	][ 	]*\([_A-Za-z][_A-Za-z0-9]*\)$$/\1/p' | sort -u | { first=true; while read symbol; do if grep -q "^$${symbol}\$$" $(srcdir)/libcdio_paranoia.sym; then if test $$first = true; then echo "  global:"; first=false; fi; echo "    $${symbol};"; fi; done; } >> $@; \
-	  ${NM} $${objs} | sed -n -e 's/^.*[ 	][ABCDGIRSTW][ABCDGIRSTW]*[ 	][ 	]*\([_A-Za-z][_A-Za-z0-9]*\)$$/\1/p' | sort -u | { first=true; while read symbol; do if grep -q "^$${symbol}\$$" $(srcdir)/libcdio_paranoia.sym; then :; else if test $$first = true; then echo "  local:"; first=false; fi; echo "    $${symbol};"; fi; done; } >> $@; \
-	fi
-	echo '};' >> $@
+# Which symbols are exported is decided by the CDDA_PUBLIC /
+# PARANOIA_PUBLIC marks in the headers (see <cdio/paranoia/export.h>),
+# with the library compiled -fvisibility=hidden; the version script only
+# tags them all CDIO_PARANOIA_MAJOR.
+libcdio_paranoia.la.ver: Makefile
+	echo 'CDIO_PARANOIA_$(libcdio_paranoia_la_MAJOR) { global: *; };' > $@
 else
 libcdio_paranoia_la_LDFLAGS = $(libcdio_paranoia_la_ldflags)
 endif !BUILD_VERSIONED_LIBS
