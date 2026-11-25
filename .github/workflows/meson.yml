@@ -1,0 +1,97 @@
+name: Meson
+
+on: [push, pull_request]
+
+jobs:
+  unix:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y meson ninja-build libcdio-dev
+
+    - name: Setup (macOS)
+      if: runner.os == 'macOS'
+      run: brew install meson ninja libcdio
+
+    - name: Build
+      run: |
+        meson setup build
+        meson compile -C build
+
+    - name: Test
+      run: meson test -C build --print-errorlogs
+
+  msvc:
+    # No libcdio package for MSVC: subprojects/libcdio.wrap builds it.
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x64, x86]
+        buildtype: [debug, release]
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Setup
+      run: pip install meson ninja
+
+    - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: ${{ matrix.arch }}
+
+    - name: Build
+      run: |
+        meson setup build --buildtype=${{ matrix.buildtype }}
+        # Keep going after errors so one run reports all of them.
+        meson compile -C build --ninja-args=-k0
+
+    - name: Test
+      run: meson test -C build --print-errorlogs
+
+  mingw:
+    strategy:
+      fail-fast: false
+      matrix:
+        sys: [mingw64, ucrt64]
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: msys2/setup-msys2@v2
+      with:
+        msystem: ${{ matrix.sys }}
+        update: true
+        # The regression scripts need cmp, wc and awk.
+        install: diffutils coreutils gawk
+        pacboy: >-
+          toolchain:p
+          meson:p
+          ninja:p
+          libcdio:p
+
+    - name: Build
+      run: |
+        meson setup build
+        meson compile -C build
+
+    - name: Test
+      run: meson test -C build --print-errorlogs

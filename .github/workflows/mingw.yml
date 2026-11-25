@@ -1,0 +1,67 @@
+name: Windows, MinGW
+
+on: [push, pull_request]
+
+jobs:
+  build-and-test:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { sys: mingw64, env: x86_64 }
+          - { sys: ucrt64,  env: ucrt-x86_64 }
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: msys2/setup-msys2@v2
+      with:
+        msystem: ${{ matrix.sys }}
+        update: true
+        install: >-
+          base-devel
+          autotools
+          mingw-w64-${{ matrix.env }}-toolchain
+          mingw-w64-${{ matrix.env }}-libcdio
+
+    - name: Build
+      run: |
+        ./autogen.sh
+        make -j4
+
+    - name: Test
+      run: make check
+
+    - name: Link a program against the static and the shared libraries
+      # MinGW programs must link either library without defining
+      # CDIO_STATIC.  paranoia_cb_mode2str is a variable: variables are
+      # what needs __declspec(dllimport) under MSVC.
+      run: |
+        cat > link-test.c <<'TEST'
+        #include <stdio.h>
+        #include <cdio/paranoia/paranoia.h>
+        int main(void) {
+          printf("%s %s %s\n", cdio_paranoia_version(), cdio_cddap_version(),
+                 paranoia_cb_mode2str[0]);
+          return 0;
+        }
+        TEST
+        gcc -Iinclude -o link-static.exe link-test.c \
+          lib/paranoia/.libs/libcdio_paranoia.a \
+          lib/cdda_interface/.libs/libcdio_cdda.a -lcdio -lm
+        ./link-static.exe
+        # The static libraries must not make the program export their
+        # functions.
+        if objdump -p link-static.exe | grep -qE 'cdio_(paranoia|cddap)_'; then
+          echo "link-static.exe exports or imports libcdio-paranoia symbols:"
+          objdump -p link-static.exe | grep -E 'cdio_(paranoia|cddap)_'
+          exit 1
+        fi
+        gcc -Iinclude -o link-shared.exe link-test.c \
+          lib/paranoia/.libs/libcdio_paranoia.dll.a \
+          lib/cdda_interface/.libs/libcdio_cdda.dll.a -lcdio
+        PATH="$PWD/lib/paranoia/.libs:$PWD/lib/cdda_interface/.libs:$PATH" ./link-shared.exe
