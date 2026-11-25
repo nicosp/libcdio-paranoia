@@ -1,0 +1,6 @@
+@NAME@ {
+  global:
+@SYMBOLS@
+  local:
+    *;
+};

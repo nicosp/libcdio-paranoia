@@ -1,0 +1,9 @@
+# Used only when no libcdio is installed (MSVC, for one).  It needs
+# libcdio's Meson build.
+[wrap-git]
+url = https://github.com/nicosp/libcdio-C.git
+revision = export-macros
+depth = 1
+
+[provide]
+libcdio = libcdio_dep

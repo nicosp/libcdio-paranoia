@@ -1,0 +1,15 @@
+# Build options for libcdio-paranoia.  They mirror the switches the
+# autotools configure script accepts; the configure spelling is given.
+
+option('cd-paranoia-name', type: 'string', value: 'cd-paranoia',
+       description: 'Name to install the cd-paranoia program as (--with-cd-paranoia-name)')
+option('versioned-libs', type: 'feature', value: 'auto',
+       description: 'Tag exported symbols with a version (needs a linker that takes --version-script)')
+option('cxx', type: 'boolean', value: true,
+       description: 'Build the C++ example programs when cpp-examples is on (--disable-cxx)')
+option('examples', type: 'boolean', value: true,
+       description: 'Build the example programs (--disable-example-progs)')
+option('cpp-examples', type: 'boolean', value: false,
+       description: 'Build the C++ example programs (--enable-cpp-progs)')
+option('tests', type: 'boolean', value: true,
+       description: 'Build the test programs and register them with meson test')

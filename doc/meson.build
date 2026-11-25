@@ -1,0 +1,2 @@
+subdir('en')
+subdir('ja')
