@@ -28,6 +28,8 @@
 #ifndef CDIO__PARANOIA__PARANOIA_H_
 #define CDIO__PARANOIA__PARANOIA_H_
 
+#include <cdio/paranoia/export.h>
+
 #include <cdio/paranoia/cdda.h>
 #include <stdint.h>
 
@@ -87,7 +89,7 @@ typedef enum  {
   PARANOIA_CB_FINISHED        /**< Finished writing "*" */
 } paranoia_cb_mode_t;
 
-  extern const char *paranoia_cb_mode2str[];
+  PARANOIA_PUBLIC extern const char *paranoia_cb_mode2str[];
 
 #ifdef __cplusplus
 extern "C" {
@@ -98,7 +100,7 @@ extern "C" {
 
     @return paranoia version string
    */
-  extern const char *cdio_paranoia_version(void);
+  PARANOIA_PUBLIC extern const char *cdio_paranoia_version(void);
 
   /*!
     Get and initialize a new cdrom_paranoia object from cdrom_drive.
@@ -107,7 +109,7 @@ extern "C" {
     @return new cdrom_paranoia object Call paranoia_free() when you are
     done with it
    */
-  extern cdrom_paranoia_t *cdio_paranoia_init(cdrom_drive_t *d);
+  PARANOIA_PUBLIC extern cdrom_paranoia_t *cdio_paranoia_init(cdrom_drive_t *d);
 
   /*!
     Free any resources associated with p.
@@ -116,7 +118,7 @@ extern "C" {
 
     @see paranoia_init.
    */
-  extern void cdio_paranoia_free(cdrom_paranoia_t *p);
+  PARANOIA_PUBLIC extern void cdio_paranoia_free(cdrom_paranoia_t *p);
 
   /*!
     Set the kind of repair you want to on for reading.
@@ -127,7 +129,7 @@ extern "C" {
                          paranoia_mode_t, e.g.
 		         PARANOIA_MODE_FULL^PARANOIA_MODE_NEVERSKIP
    */
-  extern void cdio_paranoia_modeset(cdrom_paranoia_t *p, int mode_flags);
+  PARANOIA_PUBLIC extern void cdio_paranoia_modeset(cdrom_paranoia_t *p, int mode_flags);
 
   /*!
     reposition reading offset.
@@ -137,7 +139,7 @@ extern "C" {
     @param whence  like corresponding parameter in libc's lseek, e.g.
                    SEEK_SET or SEEK_END.
   */
-  extern lsn_t cdio_paranoia_seek(cdrom_paranoia_t *p, int32_t seek,
+  PARANOIA_PUBLIC extern lsn_t cdio_paranoia_seek(cdrom_paranoia_t *p, int32_t seek,
 				  int whence);
 
   /*!
@@ -153,7 +155,7 @@ extern "C" {
     bytes. This data is not to be freed by the caller. It will persist
     only until the next call to paranoia_read() for this p.
   */
-  extern int16_t *cdio_paranoia_read(cdrom_paranoia_t *p,
+  PARANOIA_PUBLIC extern int16_t *cdio_paranoia_read(cdrom_paranoia_t *p,
 				     void(*callback)(long int,
 						     paranoia_cb_mode_t));
 
@@ -173,16 +175,16 @@ extern "C" {
     @see cdio_paranoia_read.
 
   */
-  extern int16_t *cdio_paranoia_read_limited(cdrom_paranoia_t *p,
+  PARANOIA_PUBLIC extern int16_t *cdio_paranoia_read_limited(cdrom_paranoia_t *p,
 					     void(*callback)(long int,
 							   paranoia_cb_mode_t),
 					     int max_retries);
 
 
 /*! a temporary hack */
-  extern void cdio_paranoia_overlapset(cdrom_paranoia_t *p,long overlap);
+  PARANOIA_PUBLIC extern void cdio_paranoia_overlapset(cdrom_paranoia_t *p,long overlap);
 
-  extern void cdio_paranoia_set_range(cdrom_paranoia_t *p, long int start,
+  PARANOIA_PUBLIC extern void cdio_paranoia_set_range(cdrom_paranoia_t *p, long int start,
 				      long int end);
 
   /*!
@@ -194,7 +196,7 @@ extern "C" {
 
     @return        number of cache sectors before the call
    */
-  extern int cdio_paranoia_cachemodel_size(cdrom_paranoia_t *p,int sectors);
+  PARANOIA_PUBLIC extern int cdio_paranoia_cachemodel_size(cdrom_paranoia_t *p,int sectors);
 
 #ifndef DO_NOT_WANT_PARANOIA_COMPATIBILITY
 /** For compatibility with good ol' paranoia */

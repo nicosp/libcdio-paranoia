@@ -11,6 +11,8 @@
 #ifndef CDIO__PARANOIA__TOC_H_
 #define CDIO__PARANOIA__TOC_H_
 
+#include <cdio/paranoia/export.h>
+
 #include <cdio/cdio.h>
 
 #ifdef __cplusplus
@@ -28,32 +30,32 @@ extern "C" {
     error or the LSN after the LEADOUT (beyond the end of the CD), then
     CDIO_INVALID_TRACK is returned.
   */
-  extern int     cdio_cddap_sector_gettrack(cdrom_drive_t *d, lsn_t lsn);
+  CDDA_PUBLIC extern int     cdio_cddap_sector_gettrack(cdrom_drive_t *d, lsn_t lsn);
 
   /*! Return the number of channels in track: 2 or 4; -2 if not
     implemented or -1 for error.
     Not meaningful if track is not an audio track.
   */
-  extern int     cdio_cddap_track_channels(cdrom_drive_t *d, track_t i_track);
+  CDDA_PUBLIC extern int     cdio_cddap_track_channels(cdrom_drive_t *d, track_t i_track);
 
   /*! Return 1 is track is an audio track, 0 otherwise. */
-  extern int     cdio_cddap_track_audiop(cdrom_drive_t *d, track_t i_track);
+  CDDA_PUBLIC extern int     cdio_cddap_track_audiop(cdrom_drive_t *d, track_t i_track);
 
   /*! Return 1 is track has copy permit set, 0 otherwise. */
-  extern int     cdio_cddap_track_copyp(cdrom_drive_t *d, track_t i_track);
+  CDDA_PUBLIC extern int     cdio_cddap_track_copyp(cdrom_drive_t *d, track_t i_track);
 
   /*! Return 1 is audio track has linear preemphasis set, 0 otherwise.
     Only makes sense for audio tracks.
   */
-  extern int     cdio_cddap_track_preemp(cdrom_drive_t *d, track_t i_track);
+  CDDA_PUBLIC extern int     cdio_cddap_track_preemp(cdrom_drive_t *d, track_t i_track);
 
   /*! Get first lsn of the first audio track. -1 is returned on error. */
-  extern lsn_t   cdio_cddap_disc_firstsector(cdrom_drive_t *d);
+  CDDA_PUBLIC extern lsn_t   cdio_cddap_disc_firstsector(cdrom_drive_t *d);
 
   /*! Get last lsn of the last audio track. The last lsn is generally one
     less than the start of the next track after the audio track. -1 is
     returned on error. */
-  extern lsn_t   cdio_cddap_disc_lastsector(cdrom_drive_t *d);
+  CDDA_PUBLIC extern lsn_t   cdio_cddap_disc_lastsector(cdrom_drive_t *d);
 
 #ifdef __cplusplus
 }

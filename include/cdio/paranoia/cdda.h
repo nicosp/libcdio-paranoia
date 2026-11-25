@@ -28,6 +28,8 @@
 #ifndef CDIO__PARANOIA__CDDA_H_
 #define CDIO__PARANOIA__CDDA_H_
 
+#include <cdio/paranoia/export.h>
+
 #include <cdio/cdio.h>
 
 #ifdef __cplusplus
@@ -186,7 +188,7 @@ struct cdrom_drive_s {
     When using CDDA_MESSAGE_LOGIT, free the message buffer with
     cdio_cddap_free_messages() after use.
 */
-extern cdrom_drive_t *cdio_cddap_find_a_cdrom(int messagedest,
+CDDA_PUBLIC extern cdrom_drive_t *cdio_cddap_find_a_cdrom(int messagedest,
 					      char **ppsz_message);
 
 /** Returns a paranoia CD-ROM drive object with a CD-DA in it or NULL
@@ -196,7 +198,7 @@ extern cdrom_drive_t *cdio_cddap_find_a_cdrom(int messagedest,
     When using CDDA_MESSAGE_LOGIT, free the message buffer with
     cdio_cddap_free_messages() after use.
  */
-extern cdrom_drive_t *cdio_cddap_identify(const char *psz_device,
+CDDA_PUBLIC extern cdrom_drive_t *cdio_cddap_identify(const char *psz_device,
 					  int messagedest,
 					  char **ppsz_message);
 
@@ -209,31 +211,31 @@ extern cdrom_drive_t *cdio_cddap_identify(const char *psz_device,
     When using CDDA_MESSAGE_LOGIT, free the message buffer with
     cdio_cddap_free_messages() after use.
  */
-cdrom_drive_t *cdio_cddap_identify_cdio(CdIo_t *p_cdio,
+CDDA_PUBLIC cdrom_drive_t *cdio_cddap_identify_cdio(CdIo_t *p_cdio,
 					int messagedest, char **ppsz_messages);
 
 /** informational functions */
 
-extern const char *cdio_cddap_version(void);
+CDDA_PUBLIC extern const char *cdio_cddap_version(void);
 
 /** Returns the current message buffer. Free the returned
     string using cdio_cddap_free_messages() if not NULL.
  */
-extern char   *cdio_cddap_messages(cdrom_drive_t *d);
+CDDA_PUBLIC extern char   *cdio_cddap_messages(cdrom_drive_t *d);
 
 /** Returns the current error buffer. Free the returned
     string using cdio_cddap_free_messages() if not NULL.
  */
-extern char   *cdio_cddap_errors(cdrom_drive_t *d);
+CDDA_PUBLIC extern char   *cdio_cddap_errors(cdrom_drive_t *d);
 
 /** Frees the message string passed in psz_messages.
  */
-extern void    cdio_cddap_free_messages(char *psz_messages);
+CDDA_PUBLIC extern void    cdio_cddap_free_messages(char *psz_messages);
 
 /** drive-oriented functions */
 
-extern int     cdio_cddap_speed_set(cdrom_drive_t *d, int speed);
-extern void    cdio_cddap_verbose_set(cdrom_drive_t *d, int err_action,
+CDDA_PUBLIC extern int     cdio_cddap_speed_set(cdrom_drive_t *d, int speed);
+CDDA_PUBLIC extern void    cdio_cddap_verbose_set(cdrom_drive_t *d, int err_action,
 				      int mes_action);
 
 /*!
@@ -246,7 +248,7 @@ extern void    cdio_cddap_verbose_set(cdrom_drive_t *d, int err_action,
 
   @see cdio_cddap_close
 */
-bool cdio_cddap_close_no_free_cdio(cdrom_drive_t *d);
+CDDA_PUBLIC bool cdio_cddap_close_no_free_cdio(cdrom_drive_t *d);
 
 /*!
   Closes d and releases all storage associated with it.
@@ -258,58 +260,58 @@ bool cdio_cddap_close_no_free_cdio(cdrom_drive_t *d);
 
   @see cdio_cddap_close_no_free_cdio
 */
-extern int     cdio_cddap_close(cdrom_drive_t *d);
+CDDA_PUBLIC extern int     cdio_cddap_close(cdrom_drive_t *d);
 
-extern int     cdio_cddap_open(cdrom_drive_t *d);
+CDDA_PUBLIC extern int     cdio_cddap_open(cdrom_drive_t *d);
 
-extern long    cdio_cddap_read(cdrom_drive_t *d, void *p_buffer,
+CDDA_PUBLIC extern long    cdio_cddap_read(cdrom_drive_t *d, void *p_buffer,
 			       lsn_t beginsector, long sectors);
 
-extern long    cdio_cddap_read_timed(cdrom_drive_t *d, void *p_buffer,
+CDDA_PUBLIC extern long    cdio_cddap_read_timed(cdrom_drive_t *d, void *p_buffer,
 				     lsn_t beginsector, long sectors, int *milliseconds);
 
 /*! Return the lsn for the start of track i_track */
-extern lsn_t   cdio_cddap_track_firstsector(cdrom_drive_t *d,
+CDDA_PUBLIC extern lsn_t   cdio_cddap_track_firstsector(cdrom_drive_t *d,
 				      track_t i_track);
 
 /*! Get last lsn of the track. This generally one less than the start
   of the next track. -1 is returned on error. */
-extern lsn_t   cdio_cddap_track_lastsector(cdrom_drive_t *d, track_t i_track);
+CDDA_PUBLIC extern lsn_t   cdio_cddap_track_lastsector(cdrom_drive_t *d, track_t i_track);
 
 /*! Return the number of tracks on the CD. */
-extern track_t cdio_cddap_tracks(cdrom_drive_t *d);
+CDDA_PUBLIC extern track_t cdio_cddap_tracks(cdrom_drive_t *d);
 
 /*! Return the track containing the given LSN. If the LSN is before
     the first track (in the pregap), 0 is returned. If there was an
     error or the LSN after the LEADOUT (beyond the end of the CD), then
     CDIO_INVALID_TRACK is returned.
  */
-extern int     cdio_cddap_sector_gettrack(cdrom_drive_t *d, lsn_t lsn);
+CDDA_PUBLIC extern int     cdio_cddap_sector_gettrack(cdrom_drive_t *d, lsn_t lsn);
 
 /*! Return the number of channels in track: 2 or 4; -2 if not
   implemented or -1 for error.
   Not meaningful if track is not an audio track.
 */
-extern int     cdio_cddap_track_channels(cdrom_drive_t *d, track_t i_track);
+CDDA_PUBLIC extern int     cdio_cddap_track_channels(cdrom_drive_t *d, track_t i_track);
 
 /*! Return 1 is track is an audio track, 0 otherwise. */
-extern int     cdio_cddap_track_audiop(cdrom_drive_t *d, track_t i_track);
+CDDA_PUBLIC extern int     cdio_cddap_track_audiop(cdrom_drive_t *d, track_t i_track);
 
 /*! Return 1 is track has copy permit set, 0 otherwise. */
-extern int     cdio_cddap_track_copyp(cdrom_drive_t *d, track_t i_track);
+CDDA_PUBLIC extern int     cdio_cddap_track_copyp(cdrom_drive_t *d, track_t i_track);
 
 /*! Return 1 is audio track has linear preemphasis set, 0 otherwise.
     Only makes sense for audio tracks.
  */
-extern int     cdio_cddap_track_preemp(cdrom_drive_t *d, track_t i_track);
+CDDA_PUBLIC extern int     cdio_cddap_track_preemp(cdrom_drive_t *d, track_t i_track);
 
 /*! Get first lsn of the first audio track. -1 is returned on error. */
-extern lsn_t   cdio_cddap_disc_firstsector(cdrom_drive_t *d);
+CDDA_PUBLIC extern lsn_t   cdio_cddap_disc_firstsector(cdrom_drive_t *d);
 
 /*! Get last lsn of the last audio track. The last lsn is generally one
   less than the start of the next track after the audio track. -1 is
   returned on error. */
-extern lsn_t   cdio_cddap_disc_lastsector(cdrom_drive_t *d);
+CDDA_PUBLIC extern lsn_t   cdio_cddap_disc_lastsector(cdrom_drive_t *d);
 
 /*! Determine Endian-ness of the CD-drive based on reading data from
   it. Some drives return audio data Big Endian while some (most)
@@ -325,7 +327,7 @@ extern lsn_t   cdio_cddap_disc_lastsector(cdrom_drive_t *d);
   @return 1 if big-endian, 0 if little-endian, -1 if we couldn't
   figure things out or some error.
  */
-extern int data_bigendianp(cdrom_drive_t *d);
+CDDA_PUBLIC extern int data_bigendianp(cdrom_drive_t *d);
 
 /** transport errors: */
 
@@ -436,8 +438,8 @@ extern paranoia_cdda_enums_t debug_paranoia_cdda_enums;
 #ifdef __cplusplus
 extern "C" {
 #endif
-  extern const char *cdio_cddap_version(void);
-  extern void cdio_cddap_free_messages(char *psz_messages);
+  CDDA_PUBLIC extern const char *cdio_cddap_version(void);
+  CDDA_PUBLIC extern void cdio_cddap_free_messages(char *psz_messages);
 
 #ifdef __cplusplus
 }
