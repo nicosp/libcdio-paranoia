@@ -12,7 +12,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef _MSC_VER
+#include <io.h>  /* write, close; MSVC has no <unistd.h> */
+#else
 #include <unistd.h>
+#endif
 
 static void PutNum(long num, int f, int endianness, int bytes) {
   int i;
