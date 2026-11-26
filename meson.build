@@ -201,7 +201,14 @@ elif system == 'windows'
     conf.set('MINGW32', 1)
   endif
   conf.set('HAVE_WIN32_CDROM', 1)
-  os_deps += cc.find_library('winmm')
+  if is_msvc
+    # winmm is part of Windows, so link it without searching: with
+    # prefer_static, or static: either way, Meson searches its compiler's
+    # library directories, and MSVC reports none
+    os_deps += declare_dependency(link_args: '-lwinmm')
+  else
+    os_deps += cc.find_library('winmm')
+  endif
 elif system == 'freebsd' or system == 'dragonfly' or system == 'kfreebsd'
   conf.set('HAVE_FREEBSD_CDROM', 1)
   os_deps += cc.find_library('cam')
